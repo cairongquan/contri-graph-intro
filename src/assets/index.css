@@ -1,0 +1,16 @@
+* {
+  padding: none;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.box-shadow {
+  box-shadow: 1px 1px 12px 1px rgba(0, 0, 0, .1);
+  padding: 12px;
+  border-radius: 4px;
+}
