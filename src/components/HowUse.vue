@@ -1,5 +1,9 @@
 <template>
   <div class="box-shadow how-use">
+    <div class="how-use-logo">
+      <img src="../assets/logo.png" draggable="false" />
+      <p>contri-graph</p>
+    </div>
     <p class="intro__title">Use</p>
     <div class="code-demo">
       <p class="title">1.安装 Install</p>
@@ -81,5 +85,17 @@ onMounted(() => {
   font-weight: 800;
   border-bottom: 1px solid #ccc;
   padding: 12px 0px;
+}
+.how-use-logo {
+  text-align: right;
+  margin-top: 12px;
+}
+.how-use-logo img {
+  width: 102px;
+}
+.how-use-logo p {
+  font-size: 22px;
+  user-select: none;
+  font-weight: 800;
 }
 </style>
