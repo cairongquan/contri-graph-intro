@@ -14,3 +14,8 @@ ul {
   padding: 12px;
   border-radius: 4px;
 }
+
+.hljs {
+  line-height: 26px;
+  font-size: 16px;
+}
