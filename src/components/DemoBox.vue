@@ -4,6 +4,8 @@ import axios from "axios";
 
 import ContriGraph from "contri-graph";
 
+const selectTypeValue = ref('canvas');
+
 onMounted(() => getDateTemplateData());
 
 const renderOption = reactive({
@@ -66,23 +68,73 @@ const renderCalendar = () => {
     introList.appendChild(li);
   });
 };
+
+const renderCalendarSvg = () => {
+  const topCanvasRef = new ContriGraph({
+    svg: document.querySelector("#demo-svg"),
+    colorParse: renderOption.colorParse,
+    size: 13,
+    gapSize: 8,
+    data: renderOption.data,
+    year: 2024,
+  });
+  topCanvasRef.render();
+  renderCanvasTopHeigh.value = topCanvasRef.height;
+
+  const introList = document.querySelector(".intro__list-svg");
+  new Array(12).fill(null).forEach((item, index) => {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+    const li = document.createElement("li");
+    const p = Object.assign(document.createElement("p"), {
+      innerHTML: index + 1 + "月",
+    });
+    li.className = "li-dom";
+    li.appendChild(svg);
+    li.appendChild(p);
+    renderOption.canvas = null
+    renderOption.svg = svg;
+    new ContriGraph(renderOption).render(index + 1);
+    introList.appendChild(li);
+  });
+ }
+
+const typeValueSelectEvent = (type) => {
+  selectTypeValue.value = type
+  if (type === 'canvas') {
+    renderCalendar()
+  } else {
+    renderCalendarSvg()
+  }
+}
+
 </script>
 
 <template>
   <div class="box-shadow demo-box">
     <p class="intro__title">
-      <span>Demo: 2024 Contributions</span>
+      <span>Demo: 2024 Contributions
+        <span style="display: flex;align-items: center;">
+          <input @change="typeValueSelectEvent('canvas')" type="radio" name="type" id="type" value="canvas" :checked="selectTypeValue === 'canvas'" /> canvas
+          <input @change="typeValueSelectEvent('svg')" style="margin-left: 10px;" type="radio" name="type" id="type" value="svg" :checked="selectTypeValue === 'svg'" /> svg
+        </span>
+      </span>
       <span @click="canShowCode = !canShowCode">{{
         (canShowCode && "view") || "code"
       }}</span>
     </p>
-    <div v-show="!canShowCode">
+    <div v-show="!canShowCode && selectTypeValue === 'canvas'">
       <div class="demo-top" :style="{ height: renderCanvasTopHeigh + 'px' }">
         <canvas id="demo-canvas"></canvas>
       </div>
       <ul class="intro__list"></ul>
     </div>
-    <div v-show="canShowCode">
+    <div v-show="!canShowCode && selectTypeValue === 'svg'">
+      <div class="demo-top" :style="{ height: renderCanvasTopHeigh + 'px' }">
+        <svg id="demo-svg"></svg>
+      </div>
+      <ul class="intro__list-svg" style="margin-top: 10px;"></ul>
+    </div>
+    <div v-show="canShowCode && selectTypeValue === 'canvas'">
       <pre>
         <code class="language-typescript">
 import { onMounted, reactive, ref, watch } from "vue";
@@ -151,6 +203,38 @@ const renderCalendar = () => {
     introList.appendChild(li);
   });
 };
+        </code>
+      </pre>
+    </div>
+    <div v-show="canShowCode && selectTypeValue === 'svg'">
+      <pre>
+        <code class="language-typescript">
+          const topCanvasRef = new ContriGraph({
+          svg: document.querySelector("#demo-svg"),
+          colorParse: renderOption.colorParse,
+          size: 13,
+          gapSize: 8,
+          data: renderOption.data,
+          year: 2024,
+        });
+        topCanvasRef.render();
+        renderCanvasTopHeigh.value = topCanvasRef.height;
+
+        const introList = document.querySelector(".intro__list-svg");
+        new Array(12).fill(null).forEach((item, index) => {
+          const svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+          const li = document.createElement("li");
+          const p = Object.assign(document.createElement("p"), {
+            innerHTML: index + 1 + "月",
+          });
+          li.className = "li-dom";
+          li.appendChild(svg);
+          li.appendChild(p);
+          renderOption.canvas = null
+          renderOption.svg = svg;
+          new ContriGraph(renderOption).render(index + 1);
+          introList.appendChild(li);
+        });
         </code>
       </pre>
     </div>
